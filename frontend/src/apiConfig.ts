@@ -2,22 +2,22 @@ import axios from 'axios';
 import { supabase } from "./lib/supabase";
 
 const Api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL + '/api/v1',
+  baseURL: 'http://localhost:8000/api/v1',
 });
 
 
-  Api.interceptors.request.use(
+Api.interceptors.request.use(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (config: any) => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-          throw new Error("No valid session. User must be logged in.");
-        }
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error("No valid session. User must be logged in.");
+      }
       const token = session.access_token;
-      config.headers['Authorization'] = `Bearer ${token}`; 
+      config.headers['Authorization'] = `Bearer ${token}`;
     } catch (error) {
       console.error('Error fetching Cognito session:', error);
     }
